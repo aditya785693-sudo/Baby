@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday Anisha ❤️</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Quicksand:wght@400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --gold: #FFD700;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Quicksand', sans-serif;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Aurora Background */
+        #aurora-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(-45deg, #0b0b2a, #2b1055, #7597de, #1a0b2e, #4b1d52);
+            background-size: 400% 400%;
+            animation: aurora 15s ease infinite;
+            opacity: 0;
+            z-index: 0;
+        }
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        canvas { position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
+        .interactive { pointer-events: auto; }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Typography */
+        .cinematic-text { font-family: 'Cinzel Decorative', cursive; }
+        .handwriting { font-family: 'Dancing Script', cursive; }
+        .text-glow { text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 182, 193, 0.6); }
+        .gold-text { background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7); -webkit-background-clip: text; color: transparent; }
+
+        /* Scene Containers */
+        .scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
+
+        /* Buttons */
+        .premium-btn {
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white; padding: 12px 30px; border-radius: 30px; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; transition: all 0.3s ease; box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+        .premium-btn:active { transform: scale(0.95); }
+        
+        .pulse-glow { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { box-shadow: 0 0 0 15px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
+
+        /* Teddy & Animations */
+        #teddy-container { width: 150px; height: 150px; margin-bottom: 20px; display: inline-block; }
+        .teddy-arm-l { transform-origin: top right; animation: wave 1.5s infinite ease-in-out alternate; }
+        @keyframes wave { 0% { transform: rotate(0deg); } 100% { transform: rotate(-30deg); } }
+        .bounce { animation: bounce 1s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5); }
+        @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
+
+        /* Story Elements */
+        .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px; }
+        .bento-card { padding: 20px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.3s; }
+        .bento-card:active { transform: scale(0.95); }
+        
+        .polaroid { background: white; padding: 10px 10px 30px 10px; border-radius: 5px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); width: 80%; max-width: 300px; transform: rotate(-3deg); }
+        .polaroid-img { width: 100%; height: 250px; background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); border-radius: 3px; display: flex; justify-content: center; align-items: center; }
+
+        /* Envelope */
+        .envelope-wrapper { width: 300px; height: 200px; position: relative; cursor: pointer; perspective: 1000px; margin-top:50px;}
+        .envelope { width: 100%; height: 100%; background: #e0d2b4; border-radius: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; transform-style: preserve-3d; transition: transform 0.5s; }
+        .flap { position: absolute; top: 0; left: 0; width: 0; height: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 100px solid #c9b996; transform-origin: top; transition: transform 0.8s ease-in-out; z-index: 4; }
+        .letter { position: absolute; bottom: 0; left: 10px; right: 10px; height: 90%; background: #fffcf2; z-index: 3; transition: transform 0.8s ease-in-out; padding: 20px; box-sizing: border-box; font-size: 14px; text-align: left; overflow: hidden; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); border-radius: 5px 5px 0 0;}
+        .envelope-front { position: absolute; bottom: 0; left: 0; width: 0; height: 0; border-left: 150px solid #d4c5a3; border-right: 150px solid #d4c5a3; border-bottom: 100px solid #e0d2b4; z-index: 5; }
+        .envelope-wrapper.open .flap { transform: rotateX(180deg); z-index: 2;}
+        .envelope-wrapper.open .letter { transform: translateY(-120px); z-index: 6;}
+
+        /* Cake */
+        .cake { position: relative; width: 200px; height: 150px; }
+        .tier { position: absolute; background: #fff; border-radius: 10px; box-shadow: inset 0 -10px 20px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.2); }
+        .tier-1 { bottom: 0; width: 200px; height: 60px; left: 0; background: linear-gradient(#ffccd5, #ffb3c1); }
+        .tier-2 { bottom: 60px; width: 150px; height: 50px; left: 25px; background: linear-gradient(#fff, #ffe5ec); }
+        .tier-3 { bottom: 110px; width: 100px; height: 40px; left: 50px; background: linear-gradient(#ffccd5, #ffb3c1); }
+        .candle { position: absolute; bottom: 150px; left: 95px; width: 10px; height: 30px; background: repeating-linear-gradient(45deg, #fff, #fff 5px, #ff4d6d 5px, #ff4d6d 10px); border-radius: 5px; }
+        .flame { position: absolute; top: -15px; left: 1px; width: 8px; height: 15px; background: #fca311; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; animation: flicker 0.5s infinite alternate; opacity: 0; transition: opacity 2s; box-shadow: 0 0 20px #fca311; }
+        @keyframes flicker { 0% { transform: scale(1) rotate(-2deg); } 100% { transform: scale(1.1) rotate(2deg); } }
+
+        /* Floating Items */
+        .floating-item { position: absolute; pointer-events: auto; cursor: pointer; animation: floatUp linear forwards; }
+        @keyframes floatUp { to { transform: translateY(-120vh) rotate(360deg); } }
+        
+        /* Progress */
+        #progress-bar { position: absolute; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 50; transition: width 0.5s ease; box-shadow: 0 0 10px var(--gold); }
+
+        /* Music Controls */
+        #music-btn { position: absolute; top: 20px; right: 20px; z-index: 50; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="aurora-bg"></div>
+    <canvas id="starsCanvas"></canvas>
+    <canvas id="effectsCanvas"></canvas>
+    
+    <div id="progress-bar"></div>
+    <div id="music-btn" class="glass interactive">🎵</div>
+
+    <div id="ui-layer">
+        
+        <div id="scene-intro" class="scene" style="display: flex;">
+            <h1 class="cinematic-text text-4xl md:text-6xl text-white text-glow mb-4 opacity-0" id="intro-text1">✨ Happy Birthday,</h1>
+            <h1 class="cinematic-text text-6xl md:text-8xl gold-text font-bold opacity-0" id="intro-text2">Anisha ❤️</h1>
+        </div>
+
+        <div id="scene-teddy" class="scene">
+            <div id="teddy-container">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <g id="teddy-body">
+                        <circle cx="100" cy="130" r="50" fill="#8B5A2B"/> <circle cx="100" cy="70" r="45" fill="#8B5A2B"/> <circle cx="65" cy="40" r="18" fill="#8B5A2B"/> <circle cx="135" cy="40" r="18" fill="#8B5A2B"/> <circle cx="65" cy="40" r="10" fill="#FFC0CB"/> <circle cx="135" cy="40" r="10" fill="#FFC0CB"/> <circle cx="85" cy="65" r="5" fill="#000">
+                            <animate attributeName="ry" values="5;0.5;5" dur="3s" repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="115" cy="65" r="5" fill="#000">
+                            <animate attributeName="ry" values="5;0.5;5" dur="3s" repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="100" cy="80" r="15" fill="#FFE4C4"/>
+                        <ellipse cx="100" cy="75" rx="6" ry="4" fill="#000"/>
+                        <path d="M100,79 Q100,85 95,85 M100,79 Q100,85 105,85" stroke="#000" fill="none" stroke-width="2"/>
+                        <path d="M100,120 A10,10 0 0,0 80,120 A10,10 0 0,0 100,140 A10,10 0 0,0 120,120 A10,10 0 0,0 100,120" fill="#FF0000" class="pulse-glow"/>
+                    </g>
+                    <g id="teddy-arm-l" class="teddy-arm-l">
+                        <rect x="40" y="100" width="20" height="40" rx="10" fill="#8B5A2B" transform="rotate(-30 50 100)"/>
+                    </g>
+                    <g id="teddy-arm-r">
+                        <rect x="140" y="100" width="20" height="40" rx="10" fill="#8B5A2B" transform="rotate(30 150 100)"/>
+                    </g>
+                    <g id="teddy-legs">
+                        <rect x="70" y="160" width="22" height="30" rx="10" fill="#8B5A2B"/>
+                        <rect x="108" y="160" width="22" height="30" rx="10" fill="#8B5A2B"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="glass p-4 mb-8 min-h-[80px] w-4/5 max-w-sm flex items-center justify-center">
+                <p id="speech-bubble" class="text-white text-lg font-semibold handwriting"></p>
+            </div>
+            <button id="btn-begin" class="premium-btn pulse-glow interactive opacity-0 hidden">✨ Let's Begin ✨</button>
+        </div>
+
+        <div id="scene-story" class="scene interactive">
+            <div id="story-slider" class="w-full max-w-md h-full flex flex-col items-center justify-center relative">
+                
+                <div class="story-slide absolute inset-0 flex flex-col items-center justify-center opacity-100">
+                    <div class="text-6xl mb-4 pulse-glow">💖</div>
+                    <h2 class="cinematic-text text-3xl text-white mb-4">Hey Anisha...</h2>
+                    <p class="text-white/80 text-center px-6">I built this little magical world just to celebrate your special day.</p>
+                </div>
+
+                <div class="story-slide absolute inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none">
+                    <div class="bento-grid">
+                        <div class="glass bento-card">
+                            <span class="text-3xl mb-2">✨</span>
+                            <span class="text-white text-sm">Your Smile</span>
+                        </div>
+                        <div class="glass bento-card">
+                            <span class="text-3xl mb-2">🌸</span>
+                            <span class="text-white text-sm">Your Vibe</span>
+                        </div>
+                        <div class="glass bento-card">
+                            <span class="text-3xl mb-2">❤️</span>
+                            <span class="text-white text-sm">Your Heart</span>
+                        </div>
+                        <div class="glass bento-card">
+                            <span class="text-3xl mb-2">🦋</span>
+                            <span class="text-white text-sm">Your Magic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story-slide absolute inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none">
+                    <div class="polaroid">
+                        <div class="polaroid-img">
+                            <span class="text-5xl">👸🏻</span>
+                        </div>
+                        <p class="handwriting text-black text-xl text-center mt-3 font-bold">Picture Perfect</p>
+                    </div>
+                </div>
+
+                <div class="story-slide absolute inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none">
+                    <p class="text-white mb-4 handwriting text-xl">Tap to open...</p>
+                    <div class="envelope-wrapper" id="envelope">
+                        <div class="envelope">
+                            <div class="flap"></div>
+                            <div class="letter">
+                                <p class="handwriting text-lg font-bold text-gray-800 mb-2">Dear Anisha,</p>
+                                <p class="text-sm text-gray-700" id="letter-text"></p>
+                            </div>
+                            <div class="envelope-front"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="absolute bottom-10 flex gap-4">
+                    <button id="btn-next-story" class="premium-btn interactive">Next ➔</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="scene-celebration-ready" class="scene">
+            <h2 class="cinematic-text text-4xl text-white mb-8 text-glow">Ready for the magic?</h2>
+            <button id="btn-celebrate" class="premium-btn pulse-glow interactive text-xl px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 border-none">🎉 CELEBRATE! 🎉</button>
+        </div>
+
+        <div id="scene-finale" class="scene">
+            <div class="cake mb-10 opacity-0" id="the-cake">
+                <div class="tier tier-1"></div>
+                <div class="tier tier-2"></div>
+                <div class="tier tier-3"></div>
+                <div class="candle"><div class="flame" id="candle-flame"></div></div>
+            </div>
+            
+            <h1 class="cinematic-text text-4xl md:text-5xl text-white text-glow mb-4 opacity-0" id="final-text">Happy Birthday Anisha ❤️</h1>
+            <p class="text-white/90 text-sm md:text-base px-6 max-w-md mx-auto mb-8 opacity-0" id="final-para">
+                May this year bring you endless happiness, success, peace, beautiful memories, and countless reasons to smile. Keep shining because the world is brighter with you in it.
+            </p>
+            <p class="gold-text font-bold tracking-widest opacity-0" id="final-date">28 JUNE 2026</p>
+        </div>
+
+    </div>
+
+<script>
+    // System Architecture & Utilities
+    const d = document;
+    const q = (sel) => d.querySelector(sel);
+    const qa = (sel) => d.querySelectorAll(sel);
+    
+    let currentStorySlide = 0;
+    const totalStorySlides = 4;
+    let audioCtx;
+    let isPlaying = false;
+
+    // Canvas Stars Setup
+    const canvas = q('#starsCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const stars = Array.from({length: 150}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.width, // intentonal, handle orientation
+        r: Math.random() * 1.5,
+        alpha: Math.random(),
+        v: (Math.random() * 0.05) + 0.01
+    }));
+
+    function drawStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(s => {
+            ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fill();
+            s.alpha += s.v;
+            if (s.alpha <= 0 || s.alpha >= 1) s.v = -s.v;
+            s.y -= 0.2; // slow pan up
+            if(s.y < 0) s.y = canvas.height;
+        });
+        requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    // Procedural Soft Chime Audio (Web Audio API - No external links needed)
+    function playChime() {
+        if(!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        
+        isPlaying = !isPlaying;
+        q('#music-btn').innerText = isPlaying ? '🔊' : '🎵';
+        
+        if(!isPlaying) return; // Note: For a real loop we'd build a sequencer. Keeping it simple for demo.
+        
+        const notes = [261.63, 329.63, 392.00, 523.25]; // C, E, G, C
+        notes.forEach((freq, i) => {
+            setTimeout(() => {
+                if(!isPlaying) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+                osc.stop(audioCtx.currentTime + 1.5);
+            }, i * 300);
+        });
+    }
+    q('#music-btn').addEventListener('click', playChime);
+
+    // Floating Items Logic (Balloons, Petals)
+    function createFloatingItem(type, amount, popable = false) {
+        const emojis = type === 'balloon' ? ['🎈','❤️','✨','🎂'] : ['🌸','🌹','✨'];
+        for(let i=0; i<amount; i++) {
+            const el = d.createElement('div');
+            el.className = 'floating-item';
+            el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            el.style.left = `${Math.random() * 100}vw`;
+            el.style.top = `${window.innerHeight + (Math.random() * 500)}px`;
+            el.style.fontSize = type === 'balloon' ? `${Math.random() * 30 + 30}px` : `${Math.random() * 10 + 10}px`;
+            el.style.animationDuration = `${Math.random() * 10 + 5}s`;
+            
+            if(popable) {
+                el.addEventListener('click', (e) => {
+                    confetti({ particleCount: 30, spread: 50, origin: { x: e.clientX/window.innerWidth, y: e.clientY/window.innerHeight } });
+                    el.remove();
+                });
+            }
+            d.body.appendChild(el);
+            
+            // Cleanup
+            setTimeout(() => { if(el.parentNode) el.remove(); }, 15000);
+        }
+    }
+
+    // Sequence Flow using GSAP
+    window.onload = () => {
+        const tl = gsap.timeline();
+
+        // 1. INTRO
+        gsap.to('#aurora-bg', {opacity: 1, duration: 4, ease: "power2.inOut"});
+        tl.to('#intro-text1', {opacity: 1, y: -20, duration
